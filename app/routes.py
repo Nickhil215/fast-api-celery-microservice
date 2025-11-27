@@ -1,24 +1,25 @@
-from app.app import app
-from flask import request, render_template, jsonify
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 from celery.result import AsyncResult
 from app.tasks import *
+from app.app import celery
 
+app = FastAPI()
 
-@app.route('/')
+@app.get("/")
 def default():
     return "Welcome to Report Service"
 
-@app.route('/health')
+@app.get("/health")
 def health():
-    return jsonify({"state":"healthy"})
+    return JSONResponse({"state": "healthy"})
 
-@app.route('/report', methods=['POST'])
+@app.post("/report")
 def generate_report():
     async_result = report.delay()
-    return jsonify({"report_id":async_result.id})
+    return JSONResponse({"report_id": async_result.id})
 
-
-@app.route('/report/<report_id>')
-def get_report(report_id):
-    res = AsyncResult(report_id,app=celery)
-    return jsonify({"id":res.id,"result":res.result})
+@app.get("/report/{report_id}")
+def get_report(report_id: str):
+    res = AsyncResult(report_id, app=celery)
+    return JSONResponse({"id": res.id, "result": res.result})
