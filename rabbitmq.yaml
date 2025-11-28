@@ -65,3 +65,4 @@ spec:
   - port: 15672
     name: rabbitmq-mgmt
     targetPort: management
+
