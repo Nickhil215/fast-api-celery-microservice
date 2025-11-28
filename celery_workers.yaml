@@ -23,7 +23,7 @@ metadata:
   name: celery-worker
   namespace: celery-workers
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       name: celery-worker
@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
         - name: celery-worker
-          image: xasag94215/flask-celery-microservice
+          image: nikhilv215/fast-api-celery-microservice:v4
           command:
             - "bash"
             - "-c"

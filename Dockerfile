@@ -13,5 +13,4 @@ RUN pip install -r requirements.txt
 # Copy code
 COPY . /app/
 
-CMD gunicorn --workers 10 --bind 0.0.0.0:5000 --log-level DEBUG main:app
-
+CMD uvicorn main:app --host 0.0.0.0 --port 5000 --log-level debug

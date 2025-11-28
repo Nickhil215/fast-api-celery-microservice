@@ -3,8 +3,9 @@ from fastapi.responses import JSONResponse
 from celery.result import AsyncResult
 from app.tasks import *
 from app.app import celery
+from app.app import app
 
-app = FastAPI()
+# app = FastAPI()
 
 @app.get("/")
 def default():

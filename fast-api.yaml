@@ -1,0 +1,56 @@
+# namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fast-api-backend
+---
+# secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: fast-api-secret
+  namespace: fast-api-backend
+type: Opaque
+data:
+  CELERY_BROKER_URL: YW1xcDovL2FkbWluOnNlY3JldHBhc3N3b3JkQHJhYmJpdG1xLnJhYmJpdG1xOjU2NzI=
+  CELERY_RESULT_BACKEND: ZGIrcG9zdGdyZXNxbDovL3Rlc3Q6dGVzdEAxMjNAcG9zdGdyZXNxbC5wb3N0Z3Jlczo1NDMyL2ZsYXNrLXNlcnZpY2U=
+  SECRET_KEY: dGVzdA==
+---
+# deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fast-api-server
+  namespace: fast-api-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: fast-api-server
+  template:
+    metadata:
+      labels:
+        name: fast-api-server
+    spec:
+      containers:
+        - name: fast-api-server
+          image: nikhilv215/fast-api-celery-microservice:v4
+          envFrom:
+            - secretRef:
+                name: fast-api-secret
+          ports:
+            - containerPort: 5000
+              name: rest
+---
+# service
+apiVersion: v1
+kind: Service
+metadata:
+  name: fast-api-server
+  namespace: fast-api-backend
+spec:
+  selector:
+    name: fast-api-server
+  ports:
+    - port: 80
+      targetPort: rest
